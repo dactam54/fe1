@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import { apiGetCurrentUser } from "../../apis/user";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -41,6 +42,19 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
+  const [data, setData] = useState(null)
+
+  const getCurrentUser = async () => {
+    const response = await apiGetCurrentUser()
+    if (response.err === 0) {
+      setData(response || "Chưa có thông tin")
+      console.log('Đăng nhập thành công', response)
+
+    } else {
+      dispatch({ type: actionTypes.LOGIN })
+    }
+  }
+  useEffect(() => { getCurrentUser() }, []);
   return (
     <Box
       sx={{
@@ -80,7 +94,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  ADMIN
+                  {data?.data?.name || "Chưa có"}
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -96,7 +110,7 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={`../../assets/user.png`}
+                  src={data?.data?.avatar || "https://via.placeholder.com/150"}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -107,10 +121,10 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Ed Roh
+                  {data?.data?.name || "Chưa có"}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
+                  {data?.data?.role === 'admin' ? "Admin" : "User"}
                 </Typography>
               </Box>
             </Box>
@@ -130,15 +144,17 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Data
+              Admin
             </Typography>
+
             <Item
-              title="Manage Team"
+              title="Manage User"
               to="/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
               title="Contacts Information"
               to="/contacts"
@@ -159,7 +175,7 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Pages
+              User
             </Typography>
             <Item
               title="Profile Form"

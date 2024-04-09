@@ -44,7 +44,6 @@ const Login = () => {
     const handleLogin = async () => {
         if (login) {
             const response = await apiLogin({ email: payload.email, password: payload.password })
-
             if (response.err === 0) {
                 dispatch({ type: actionTypes.LOGIN, accessToken: response.accessToken, isLogin: true })
                 console.log('response', response)

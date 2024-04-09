@@ -4,59 +4,126 @@ import { tokens } from "../../theme";
 import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
+import { apiGetAllLocation, apiGetLocationById } from '../../apis/location'
+import { Avatar, Button, } from '@mui/material'
 
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [data, setData] = useState([])
+
+  const fetchData = async () => {
+    const response = await apiGetAllLocation()
+    if (response.err === 0) {
+      setData(response.data)
+    }
+    console.log(response.data)
+  }
+  console.log('data: ', data)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar ID" },
+    {
+      field: "id",
+      headerName: "ID",
+      width: '200',
+      pinned: 'left'
+    },
     {
       field: "name",
-      headerName: "Name",
-      flex: 1,
+      headerName: "Tên địa điểm",
+      cellClassName: "name-column--cell",
+      width: '200'
+    },
+    {
+      field: "thumbnail",
+      headerName: "Ảnh địa điểm",
+      width: 150,
+      renderCell: (params) => (
+
+        <Avatar
+          src={params.value || 'https://via.placeholder.com/150'}
+          sx={{ width: 84, height: 84, mb: 1, }}
+        />
+      ),
+    },
+    {
+      field: "region",
+      headerName: "Vùng miền",
       cellClassName: "name-column--cell",
     },
+    // {
+    //   field: "openTime",
+    //   headerName: "Thời gian",
+    //   cellClassName: "name-column--cell",
+    // },
+
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
+      field: "openTime",
+      headerName: "Thời gian",
+      cellClassName: "name-column--cell",
+      renderCell: (params) => {
+        console.log('params1: ', params.row.openTime[0].split('-'))
+        return (
+          <div>
+            {/* <div>{`${params.row.openTime[0]} PM`}</div> */}
+            <div>{`${params.row.openTime[0].split('-')[0]} AM - ${params.row.openTime[0].split('-')[1]} PM`}</div>
+          </div>
+        );
+      }
     },
     {
       field: "address",
-      headerName: "Address",
-      flex: 1,
+      headerName: "Địa điểm",
+      cellClassName: "name-column--cell",
+      width: '250',
+      renderCell: (params) => {
+        const addressObject = params.value;
+        return (
+          <div>
+            <div>{addressObject.specific}</div>
+          </div>
+        );
+      }
     },
     {
-      field: "city",
-      headerName: "City",
-      flex: 1,
+      field: "openType",
+      headerName: "Trạng thái",
+      cellClassName: "name-column--cell",
+      renderCell: (params) => {
+        console.log('params: ', params.row.openType)
+        return (
+          <div>
+            <div>{params.row.openType === "OPEN" ? 'Đang hoạt động' : 'Ngừng hoạt động'}</div>
+          </div>
+        );
+      }
     },
     {
-      field: "zipCode",
-      headerName: "Zip Code",
-      flex: 1,
+      field: "action",
+      headerName: "Thao tác",
+      width: 120,
+      pinned: 'right',
+      renderCell: (params) => (
+        <div>
+          <Button sx={{
+            color: '#ffff', background: '#50727B'
+          }}>Chỉ dẫn</Button>
+        </div>
+      ),
     },
   ];
 
   return (
     <Box m="20px">
       <Header
-        title="CONTACTS"
-        subtitle="List of Contacts for Future Reference"
+        title="ADMIN"
+        subtitle="Quản lí địa điểm"
       />
       <Box
         m="40px 0 0 0"
@@ -91,7 +158,8 @@ const Contacts = () => {
         }}
       >
         <DataGrid
-          rows={mockDataContacts}
+          checkboxSelection
+          rows={data}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
         />
