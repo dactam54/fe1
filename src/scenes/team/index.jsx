@@ -8,10 +8,17 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import { apiGetAllUser } from "../../apis/user";
+import { Avatar, Button } from '@mui/material'
+import { useSelector, useDispatch } from 'react-redux'
+
 
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+
+  const dispatch = useDispatch()
+  const { isAdmin } = useSelector(state => state.auth);
 
   const [data, setData] = useState([])
 
@@ -25,72 +32,42 @@ const Team = () => {
   }, [])
 
   const columns = [
-    { field: "id", headerName: "ID", width: '200' },
+    { field: "id", headerName: "ID", width: '200', sortable: true, sticky: 'left' },
+    {
+      field: "avatar",
+      headerName: "Ảnh đại diện",
+      width: 150,
+      height: 150,
+      renderCell: (params) => (
+        // <div style={{ height: '150px' }}>
+        <Avatar
+          src={params.value || 'https://via.placeholder.com/150'}
+          sx={{ width: 40, height: 40 }}
+        />
+        // </div>
+
+      ),
+    },
     {
       field: "name",
       headerName: "Tên người dùng",
-      flex: 1,
+      width: 200,
+      sortable: true,
       cellClassName: "name-column--cell",
     },
     {
       field: "email",
       headerName: "Tên đăng nhập",
-      flex: 1,
       cellClassName: "name-column--cell",
+      sortable: true,
+      // flex: 1,
+      width: 200,
     },
-    // {
-    //   field: "age",
-    //   headerName: "Age",
-    //   type: "number",
-    //   headerAlign: "left",
-    //   align: "left",
-    // },
-    // {
-    //   field: "phone",
-    //   headerName: "Phone Number",
-    //   flex: 1,
-    // },
-    // {
-    //   field: "email",
-    //   headerName: "Email",
-    //   flex: 1,
-    // },
-    // {
-    //   field: "role",
-    //   headerName: "Access Level",
-    //   flex: 1,
-    //   renderCell: ({ row: { access } }) => {
-    //     return (
-    //       <Box
-    //         width="60%"
-    //         m="0 auto"
-    //         p="5px"
-    //         display="flex"
-    //         justifyContent="center"
-    //         backgroundColor={
-    //           access === "admin"
-    //             ? colors.greenAccent[600]
-    //             : access === "manager"
-    //               ? colors.greenAccent[700]
-    //               : colors.greenAccent[700]
-    //         }
-    //         borderRadius="4px"
-    //       >
-    //         {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-    //         {access === "manager" && <SecurityOutlinedIcon />}
-    //         {access === "user" && <LockOpenOutlinedIcon />}
-    //         <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-    //           {access}
-    //         </Typography>
-    //       </Box>
-    //     );
-    //   },
-    // },
-
     {
       field: "phone",
       headerName: "Số điện thoại",
-      flex: 1,
+      width: 150,
+      sortable: true,
       renderCell: ({ row: { phone } }) => {
         return (
           <Typography color={colors.grey[100]}>{phone || "Chưa có thông tin"}</Typography>
@@ -101,8 +78,9 @@ const Team = () => {
     {
       field: "role",
       headerName: "Quyền truy cập",
-      // flex: 1,
       width: '200',
+      sortable: true,
+      sticky: 'right',
       renderCell: ({ row: { role } }) => {
         return (
           <Box
@@ -124,6 +102,27 @@ const Team = () => {
           </Box>
         );
       },
+    },
+
+    {
+      field: "action",
+      headerName: "Thao tác",
+      width: 200,
+      pinned: 'right',
+      renderCell: (params) => (
+        <div>
+          <Button sx={{
+            color: '#ffff', background: '#50727B',
+            textTransform: 'none',
+            mr: 1
+          }}>Xem chi tiết </Button>
+
+          <Button sx={{
+            color: '#ffff', background: '#50727B',
+            textTransform: 'none'
+          }}>Xóa người dùng</Button>
+        </div>
+      ),
     },
   ];
 

@@ -16,7 +16,11 @@ const appReducer = (state = initState, action) => {
                 ...state,
                 location: action.data
             }
-
+        case actionTypes.ADMIN:
+            return {
+                ...state,
+                isAdmin: action.isAdmin
+            }
         case actionTypes.ALERT:
             return {
                 ...state,

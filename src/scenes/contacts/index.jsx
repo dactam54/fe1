@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { apiGetAllLocation, apiGetLocationById } from '../../apis/location'
+
 import { Avatar, Button, } from '@mui/material'
 
 const Contacts = () => {
@@ -107,13 +108,26 @@ const Contacts = () => {
     {
       field: "action",
       headerName: "Thao tác",
-      width: 120,
+      width: 250,
       pinned: 'right',
       renderCell: (params) => (
         <div>
           <Button sx={{
-            color: '#ffff', background: '#50727B'
-          }}>Chỉ dẫn</Button>
+            color: '#ffff', background: '#50727B',
+            textTransform: 'none', mr: 1
+          }}>Chỉ đường </Button>
+
+          <Button sx={{
+            color: '#ffff', background: '#50727B',
+            textTransform: 'none',
+            mr: 1
+          }}>Xem chi tiết </Button>
+
+          <Button sx={{
+            color: '#ffff', background: '#50727B',
+            textTransform: 'none'
+          }}>Xóa</Button>
+
         </div>
       ),
     },

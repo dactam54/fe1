@@ -20,6 +20,7 @@ const Login = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { isLogin } = useSelector(state => state.auth)
+    const { isAdmin } = useSelector(state => state.app)
 
     const [login, setLogin] = useState(() => location.state?.register ? false : true)
 
@@ -44,9 +45,14 @@ const Login = () => {
     const handleLogin = async () => {
         if (login) {
             const response = await apiLogin({ email: payload.email, password: payload.password })
+
+            console.log('response login', response.role)
             if (response.err === 0) {
                 dispatch({ type: actionTypes.LOGIN, accessToken: response.accessToken, isLogin: true })
                 console.log('response', response)
+                if (response.role === 'admin') {
+                    dispatch({ type: actionTypes.ADMIN, isAdmin: true })
+                }
                 setPayload({ email: '', password: '' })
                 navigate(`/`)
             } else {
