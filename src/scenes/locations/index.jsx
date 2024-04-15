@@ -6,23 +6,25 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { apiGetAllLocation, apiGetLocationById } from '../../apis/location'
-
+import { useSelector } from 'react-redux'
 import { Avatar, Button, } from '@mui/material'
+import { apiGetCurrentUser, apiGetUserById } from "../../apis/user";
 
-const Contacts = () => {
+const Locations = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
   const [data, setData] = useState([])
+
+
+
 
   const fetchData = async () => {
     const response = await apiGetAllLocation()
     if (response.err === 0) {
+      console.log('locations', response.data)
       setData(response.data)
     }
-    console.log(response.data)
   }
-  console.log('data: ', data)
 
   useEffect(() => {
     fetchData()
@@ -58,11 +60,7 @@ const Contacts = () => {
       headerName: "Vùng miền",
       cellClassName: "name-column--cell",
     },
-    // {
-    //   field: "openTime",
-    //   headerName: "Thời gian",
-    //   cellClassName: "name-column--cell",
-    // },
+
 
     {
       field: "openTime",
@@ -96,11 +94,26 @@ const Contacts = () => {
       field: "openType",
       headerName: "Trạng thái",
       cellClassName: "name-column--cell",
+      width: '120',
       renderCell: (params) => {
         console.log('params: ', params.row.openType)
         return (
           <div>
             <div>{params.row.openType === "OPEN" ? 'Đang hoạt động' : 'Ngừng hoạt động'}</div>
+          </div>
+        );
+      }
+    },
+    {
+      field: "userId",
+      headerName: "Người tạo",
+      cellClassName: "name-column--cell",
+      width: '150',
+      renderCell: (params) => {
+        console.log('params: ', params?.row?.userId)
+        return (
+          <div>
+            <div>{params?.row?.userId || "Chua co thong tin"}</div>
           </div>
         );
       }
@@ -137,7 +150,9 @@ const Contacts = () => {
     <Box m="20px">
       <Header
         title="ADMIN"
-        subtitle="Quản lí địa điểm"
+        subtitle=" Quản lí địa điểm"
+      // title={isAdmin ? "ADMIN" : "USER"}
+      // subtitle={isAdmin ? "Quản lí địa điểm" : "Địa điểm của tôi"}
       />
       <Box
         m="40px 0 0 0"
@@ -172,14 +187,15 @@ const Contacts = () => {
         }}
       >
         <DataGrid
-          checkboxSelection
           rows={data}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
         />
+
+
       </Box>
     </Box>
   );
 };
 
-export default Contacts;
+export default Locations;

@@ -89,7 +89,7 @@ export const apiDeleteUser = (id) => new Promise(async (resolve, reject) => {
     try {
         const response = await instance({
             method: 'DELETE',
-            url: `/api/v1/deleteUser/${id}`
+            url: `/api/v1/delete/${id}`
         })
         resolve(response)
     } catch (error) {
@@ -220,7 +220,7 @@ export const apiDeleteWishlist = () => new Promise(async (resolve, reject) => {
         const response = await instance({
             method: 'POST',
             url: '/api/v1/deleteWishlist',
-            data: payload
+            // data: payload
         })
         resolve(response)
     } catch (err) {

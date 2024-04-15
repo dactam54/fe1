@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import { apiGetCurrentUser } from "../../apis/user";
 import { Avatar } from '@mui/material'
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const Profile = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -17,6 +18,8 @@ const Profile = () => {
     setData(response.data)
     console.log('response', response.data)
   }
+
+
 
   useEffect(() => { fetchCurrentUser() }, []);
 
@@ -31,19 +34,19 @@ const Profile = () => {
         <div>
           <label htmlFor="">Tên người dùng :</label>
           <span>
-            {data?.name}
+            {data?.name || 'Chưa cập nhật'}
           </span>
         </div>
 
         <div>
-          <label htmlFor="">Tên người dùng :</label>
+          <label htmlFor="">Email :</label>
           <span>
             {data?.email}
           </span>
         </div>
 
         <div>
-          <label htmlFor="">Tên người dùng :</label>
+          <label htmlFor="">Vai trò :</label>
           <span>
             {data?.role === 'user' ? 'USER' : 'ADMIN'}
           </span>

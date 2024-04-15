@@ -6,7 +6,6 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
@@ -17,6 +16,7 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import MenuOpenOutlinedIcon from '@mui/icons-material/MenuOpenOutlined';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { apiGetCurrentUser } from "../../apis/user";
 import { useDispatch, useSelector } from 'react-redux'
@@ -49,14 +49,16 @@ const Sidebar = () => {
 
   const [data, setData] = useState(null)
   const { isAdmin } = useSelector(state => state.app)
+
+
+
   const getCurrentUser = async () => {
     const response = await apiGetCurrentUser()
     if (response.err === 0) {
-      setData(response || "Chưa có thông tin")
-      console.log('Đăng nhập thành công', response)
-
+      setData(response.data)
+      console.log('Đăng nhập thành công', response.data)
     } else {
-      useDispatch({ type: actionTypes.LOGIN })
+      console.log('Đăng nhập thất bại', response)
     }
   }
   useEffect(() => { getCurrentUser() }, []);
@@ -84,7 +86,6 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
@@ -105,7 +106,10 @@ const Sidebar = () => {
                   Tổng quát
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
+                  {
+                    isCollapsed ? <MenuOutlinedIcon /> : <MenuOpenOutlinedIcon />
+                  }
+
                 </IconButton>
               </Box>
             )}
@@ -118,7 +122,7 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={data?.data?.avatar || "https://via.placeholder.com/150"}
+                  src={data?.avatar || "https://via.placeholder.com/150"}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -129,10 +133,10 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  {data?.data?.name || "Chưa có"}
+                  {data?.name || "Chưa có"}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]} >
-                  {`Role : ${data?.data?.role === 'admin' ? "Admin" : "User"}`}
+                  {`Role : ${data?.role === 'admin' ? "Admin" : "User"}`}
                 </Typography>
               </Box>
             </Box>
@@ -140,7 +144,7 @@ const Sidebar = () => {
 
           {/* ADMIN */}
           {
-            isAdmin ? <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+            isAdmin && data?.role === 'admin' ? <Box paddingLeft={isCollapsed ? undefined : "10%"}>
               <Item
                 title="Dashboard"
                 to="/"
@@ -159,7 +163,7 @@ const Sidebar = () => {
 
               <Item
                 title="Quản lí người dùng"
-                to="/team"
+                to="/users"
                 icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -167,11 +171,12 @@ const Sidebar = () => {
 
               <Item
                 title="Quản lí địa điểm"
-                to="/contacts"
+                to="/locations"
                 icon={<LocationOnOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
+
               <Item
                 title="Invoices Balances"
                 to="/invoices"
@@ -224,11 +229,18 @@ const Sidebar = () => {
                 User
               </Typography>
 
-
               <Item
                 title="Hồ sơ người dùng"
                 to="/profile"
                 icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+
+              <Item
+                title="Địa điểm của tôi"
+                to="/mylocations"
+                icon={<LocationOnOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -289,7 +301,7 @@ const Sidebar = () => {
           }
         </Menu>
       </ProSidebar>
-    </Box >
+    </Box>
   );
 };
 

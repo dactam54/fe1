@@ -3,9 +3,8 @@ import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
+import Team from "./scenes/users";
 import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
 import Bar from "./scenes/bar";
 import Form from "./scenes/profile";
 import Line from "./scenes/line";
@@ -19,6 +18,11 @@ import Login from "./scenes/login/Login";
 import Register from "./scenes/register/Register";
 import { useSelector, useDispatch } from 'react-redux'
 import Profile from "./scenes/profile";
+import Users from "./scenes/users";
+import Locations from "./scenes/locations";
+import MyLocations from "./scenes/mylocation";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -51,8 +55,9 @@ function App() {
                 <Topbar setIsSidebar={setIsSidebar} />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/team" element={<Team />} />
-                  <Route path="/contacts" element={<Contacts />} />
+                  <Route path="/users" element={<Users />} />
+                  <Route path="/locations" element={<Locations />} />
+                  <Route path="/mylocations" element={<MyLocations />} />
                   <Route path="/invoices" element={<Invoices />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/bar" element={<Bar />} />
@@ -61,6 +66,8 @@ function App() {
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/geography" element={<Geography />} />
+                  <Route path="*" element={<Dashboard />} />
+
 
                 </Routes>
               </main>
@@ -75,6 +82,21 @@ function App() {
           </Routes>
         </div>
       }
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      // transition:Slide,
+      />
+
     </>
 
   );

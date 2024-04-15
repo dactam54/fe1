@@ -7,12 +7,12 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import { apiGetAllUser } from "../../apis/user";
+import { apiDeleteUser, apiGetAllUser } from "../../apis/user";
 import { Avatar, Button } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 
-
-const Team = () => {
+const Users = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -30,6 +30,15 @@ const Team = () => {
   useEffect(() => {
     fetchData()
   }, [])
+
+
+  const handleDelete = async (id) => {
+    console.log('id', id)
+    // const response = await apiDeleteUser(id)
+    // if (response.err === 0) {
+    //   toast.success('Xóa người dùng thành công')
+    // }
+  }
 
   const columns = [
     { field: "id", headerName: "ID", width: '200', sortable: true, sticky: 'left' },
@@ -54,6 +63,11 @@ const Team = () => {
       width: 200,
       sortable: true,
       cellClassName: "name-column--cell",
+      renderCell: ({ row: { name } }) => {
+        return (
+          <Typography color={colors.grey[100]}>{name || "Chưa có thông tin"}</Typography>
+        );
+      },
     },
     {
       field: "email",
@@ -110,6 +124,7 @@ const Team = () => {
       width: 200,
       pinned: 'right',
       renderCell: (params) => (
+        console.log('params', params?.row?.role),
         <div>
           <Button sx={{
             color: '#ffff', background: '#50727B',
@@ -117,10 +132,16 @@ const Team = () => {
             mr: 1
           }}>Xem chi tiết </Button>
 
-          <Button sx={{
-            color: '#ffff', background: '#50727B',
-            textTransform: 'none'
-          }}>Xóa người dùng</Button>
+          <Button
+            // disabled={params?.row?.role === 'admin' ? true : false}
+            onClick={() => handleDelete(params?.row?.id)}
+            sx={{
+              color: '#ffff',
+              background: '#50727B',
+              textTransform: 'none',
+
+            }}>Xóa người dùng</Button>
+
         </div>
       ),
     },
@@ -165,10 +186,14 @@ const Team = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={data} columns={columns} components={{ Toolbar: GridToolbar }} />
+        <DataGrid
+          // checkboxSelection
+          rows={data}
+          columns={columns}
+          components={{ Toolbar: GridToolbar }} />
       </Box>
     </Box>
   );
 };
 
-export default Team;
+export default Users;
